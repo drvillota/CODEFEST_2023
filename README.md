@@ -1,4 +1,4 @@
-# Co2ncientes CODEFEST 2023
+# CO2ncientes CODEFEST 2023
 
 ## Problema de identificación de textos relacionados con la Amazonía
 
@@ -34,4 +34,4 @@ Yolo, cv2 y matplotlyb
 
 Imágen de la clasificación realizada
 
-https://raw.githubusercontent.com/drvillota/CODEFEST_2023/main/resultados.jpg
+![resultados](/assets/resultados.jpg)
