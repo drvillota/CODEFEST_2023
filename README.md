@@ -1,4 +1,4 @@
-# CO2ncientes CODEFEST 2023
+# CO2nscientes CODEFEST 2023
 
 ## Problema de identificación de textos relacionados con la Amazonía
 
