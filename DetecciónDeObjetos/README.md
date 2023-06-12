@@ -24,4 +24,4 @@ Luego hubo una segunda etapa que es la de creación de la herramienta
 
 Imágen de una máquinaria identificada
 
-![deteccion](DetecciónDeObjetos/assets/detección.png)
+![deteccion](assets/detección.png)
