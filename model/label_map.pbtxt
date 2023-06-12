@@ -1,0 +1,8 @@
+item { 
+	name:'casa'
+	id:1
+}
+item { 
+	name:'maquinaria'
+	id:2
+}
