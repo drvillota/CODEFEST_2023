@@ -95,10 +95,6 @@ def process_and_save_images(img, image_number, destiny_folder) -> int:
         predicted_minuto_W
     )
     
-    predicted_ = '00' if len(reader.readtext(hour))==0 else reader.readtext(hour)[0][1]
-    predicted_ = '00' if len(reader.readtext(minutes))==0 else reader.readtext(minutes)[0][1]
-    predicted_ = '00' if len(reader.readtext(seconds))==0 else reader.readtext(seconds)[0][1]
-    
     while index < len(detections['detection_boxes']):
         image_np_with_detections = image_np.copy()
         image_number += 1
