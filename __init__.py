@@ -9,19 +9,18 @@ from object_detection.utils import visualization_utils as viz_utils
 from object_detection.builders import model_builder
 from object_detection.utils import config_util
 
+#Cargamos al lector de análisis de texto en imágenes
 reader = easyocr.Reader(['en'])
 
-# Load pipeline config and build a detection model
+# Cargamos el modelo obtenido del entrenamiento
 PIPELINE_CONFIG = os.path.join('model', 'pipeline.config')
 configs = config_util.get_configs_from_pipeline_file(PIPELINE_CONFIG)
 detection_model = model_builder.build(model_config=configs['model'], is_training=False)
-
-# Restore checkpoint
 ckpt = tf.compat.v2.train.Checkpoint(model=detection_model)
 ckpt.restore(os.path.join('model', 'ckpt-3')).expect_partial()
 
+#Usando los labels creamos una función que recibe una imágen y etiqueta
 LABELMAP = os.path.join('model', 'label_map.pbtxt')
-
 @tf.function
 def detect_fn(image):
     image, shapes = detection_model.preprocess(image)
@@ -31,7 +30,17 @@ def detect_fn(image):
 
 category_index = label_map_util.create_category_index_from_labelmap(LABELMAP)
 
+"""
+Esta función recibe una imágen y le hace el procesamiento necesario para identificar elementos de interés en ella
+y de hallarlos guarda la imágen etiquetada y con la info de interés (nombre del archivo, elemento encontrado
+coordenadas y tiempo)
+Parametros
+img: imágen a analizar
+image_number: número de imágen (sirve para nombrar el archivo)
+destiny_folder: lugar de destino para las imágenes etiquetadas
+"""
 def process_and_save_images(img, image_number, destiny_folder) -> int:
+    #Convertimos la imágen a formato np para procesarla y filtramos
     image_np = np.array(img)
 
     input_tensor = tf.convert_to_tensor(np.expand_dims(image_np, 0), dtype=tf.float32)
@@ -56,6 +65,7 @@ def process_and_save_images(img, image_number, destiny_folder) -> int:
     label_id_offset = 1    
     index = 0
     
+    #Recortamos pedazos de imágen en donde se encuentran las horas y las coordenadas
     hour = img[157:173, 20:44]
     minutes = img[157:173, 47:71]
     seconds = img[157:173, 73:97]
@@ -69,6 +79,7 @@ def process_and_save_images(img, image_number, destiny_folder) -> int:
     hora_W = img[40:60, 241:262]
     minuto_W = img[40:60, 270:292]
         
+    #Estimamos con el reader los valores de las zonas en donde estaban las horas y coordenadas
     predicted_hour = '00' if len(reader.readtext(hour))==0 else reader.readtext(hour)[0][1]
     predicted_minutes = '00' if len(reader.readtext(minutes))==0 else reader.readtext(minutes)[0][1]
     predicted_seconds = '00' if len(reader.readtext(seconds))==0 else reader.readtext(seconds)[0][1]
@@ -95,6 +106,7 @@ def process_and_save_images(img, image_number, destiny_folder) -> int:
         predicted_minuto_W
     )
     
+    #Para cada elemento encontrado procedemos a guardar
     while index < len(detections['detection_boxes']):
         image_np_with_detections = image_np.copy()
         image_number += 1
@@ -105,6 +117,7 @@ def process_and_save_images(img, image_number, destiny_folder) -> int:
             'detection_scores' : detections['detection_scores'][index:index+1]
         }
         
+        #Aquí se añaden los recuadros a la imágen
         viz_utils.visualize_boxes_and_labels_on_image_array(
                 image_np_with_detections,
                 curr_detections['detection_boxes'],
@@ -119,6 +132,7 @@ def process_and_save_images(img, image_number, destiny_folder) -> int:
         file_name = str(image_number) + '.jpg'
         labels = {'0':'casa','1':'maquinaria'}
         
+        #Guardamos la imágen y guardamos el resultado en el csv
         cv2.imwrite(destiny_folder + file_name,cv2.cvtColor(image_np_with_detections, cv2.COLOR_BGR2RGB))
         
         result = file_name + ', ' + labels[str(curr_detections['detection_classes'][0])] + ', ' + time + ', ' + coordinates
@@ -131,12 +145,19 @@ def process_and_save_images(img, image_number, destiny_folder) -> int:
         index += 1
     return image_number
 
+"""
+Esta función busca un video y le haya objetos de interés
+Parametros
+video_path: ruta donde se encuentra el video
+output_path: ruta donde se deben subir los resultados
+"""
 def detect_objects_in_video(video_path, output_path):
     video = cv2.VideoCapture(video_path)
     framerate = 60
     save_interval = 5
     frame_n = 0
     image_number=0
+    #Cada 60 frames busca objetos de interés
     while video.isOpened() and image_number<10:
         frame_n += 60
         video.set(1,frame_n)
