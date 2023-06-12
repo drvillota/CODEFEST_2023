@@ -1,0 +1,8 @@
+LICENCE.txt
+README.md
+setup.py
+co2ncientes.egg-info/PKG-INFO
+co2ncientes.egg-info/SOURCES.txt
+co2ncientes.egg-info/dependency_links.txt
+co2ncientes.egg-info/requires.txt
+co2ncientes.egg-info/top_level.txt

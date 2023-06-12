@@ -1,0 +1,7 @@
+easyocr
+numpy
+object_detection
+opencv_python
+opencv_python_headless
+tensorflow
+tensorflow_intel
