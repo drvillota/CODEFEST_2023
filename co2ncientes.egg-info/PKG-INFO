@@ -1,0 +1,44 @@
+Metadata-Version: 2.1
+Name: co2ncientes
+Version: 0.0.2
+Summary: Una herramienta de detección de elementos peculiares
+Author: Co2ncientes (CODEFEST 2023)
+Author-email: ma.acostaw@uniandes.com
+Keywords: python,CODEFEST
+Classifier: Development Status :: 1 - Planning
+Classifier: Intended Audience :: Developers
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: Unix
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Operating System :: Microsoft :: Windows
+Description-Content-Type: text/markdown
+License-File: LICENCE.txt
+
+
+# CO2nscientes CODEFEST 2023
+
+## Problema de detección de objetos
+
+### Librerías necesarias
+
+Para el desarrollo de este reto, la libreria core con la que se realizó la detección de objetos fue tensorflow
+
+(Instalar las librerias requeridas en el requirements.txt)
+
+### Proceso de trabajo
+
+Primero hubo una etapa de creación de un modelo de detección de objetos:
+- Basados en los videos que nos entregaron, con la herramienta v2 segmentamos el video en frames
+- Los frames del video fueron examinados por una persona que se encargo de anotar cuando encontrara algo de interés (carros, barcos, zonas deforestadas, etc)
+- Se creó un diccionario de imágenes, anotando elementos de interés con la herramienta labelImg.py
+- tensorflow generó un modelo que podía identificar objetos en un frame
+
+Luego hubo una segunda etapa que es la de creación de la herramienta
+- Se registra cada 60 frames una imágen
+- La imágen es pasada por una función que primero trata de identificar la hora y las coordenadas usando easyocr
+- Luego la misma imágen es pasada por un proceso de detección de objetos usando el modelo anteriormente creado
+- Finalmente si algún objeto es detectado en la imágen, esta pasa a guardarse y a ser registrado el valor en el csv
+
+Imágen de una máquinaria identificada
+
+![deteccion](assets/detección.png)

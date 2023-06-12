@@ -25,3 +25,8 @@ Luego hubo una segunda etapa que es la de creación de la herramienta
 Imágen de una máquinaria identificada
 
 ![deteccion](assets/detección.png)
+
+### Cómo usar?
+
+Luego de descargar las dependencias
+Llame a las funciones de __init__.py o abra ese archivo y ahí ejecute la función detect_objects_in_video
